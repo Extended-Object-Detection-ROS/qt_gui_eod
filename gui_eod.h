@@ -1,0 +1,22 @@
+#ifndef GUI_EOD_H
+#define GUI_EOD_H
+
+#include <QMainWindow>
+#include <opencv2/opencv.hpp>
+
+QT_BEGIN_NAMESPACE
+namespace Ui { class gui_eod; }
+QT_END_NAMESPACE
+
+class gui_eod : public QMainWindow
+{
+    Q_OBJECT
+
+public:
+    gui_eod(QWidget *parent = nullptr);
+    ~gui_eod();
+
+private:
+    Ui::gui_eod *ui;
+};
+#endif // GUI_EOD_H
