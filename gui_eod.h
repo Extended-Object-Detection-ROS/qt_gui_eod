@@ -22,9 +22,17 @@ private slots:
 
     void on_pb_openBase_clicked();
 
+    void on_pb_detect_clicked();
+
 private:
     Ui::gui_eod *ui;
 
     eod::ObjectBase * objectBase;
+
+    QPixmap source_image;
+    QPixmap current_display_image;
+
+    void display_image(QPixmap& im);
+    void resizeEvent(QResizeEvent*);
 };
 #endif // GUI_EOD_H

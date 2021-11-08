@@ -63,6 +63,7 @@ set( eod_srcs
     lib/relations/LogicRelations.cpp
     lib/relations/ThreeDimRangeRelation.cpp
     lib/relations/SpaceRelations.cpp
+    lib/relations/SizeRelations.cpp
     )
 
 set(PROJECT_SOURCES
@@ -70,6 +71,7 @@ set(PROJECT_SOURCES
         gui_eod.cpp
         gui_eod.h
         gui_eod.ui
+        asmOpenCV.h
         ${tinyxml_srcs}
         ${eod_srcs}
 )
