@@ -10,6 +10,8 @@ gui_eod::gui_eod(QWidget *parent)
     , ui(new Ui::gui_eod)
 {
     ui->setupUi(this);
+
+
 }
 
 gui_eod::~gui_eod()
@@ -83,7 +85,6 @@ void gui_eod::on_pb_detect_clicked()
 
     // TODO: from editor to object base
 
-    //for(auto so : objectBase->simple_objects){
     for( int i = 0 ; i < objectBase->simple_objects.size(); i++){
         if(ui->lw_objects->item(i)->checkState() == Qt::Checked){
             objectBase->simple_objects[i]->Identify(frame, cv::Mat());
@@ -98,7 +99,6 @@ void gui_eod::from_base_to_list_view(){
     if( !objectBase )
         return;
     for(auto so : objectBase->simple_objects){
-        //ui->lv_objects->insertAction()
         ui->lw_objects->addItem(QString::fromStdString(so->name));
     }
     QListWidgetItem* item = 0;
@@ -109,3 +109,18 @@ void gui_eod::from_base_to_list_view(){
     }
 
 }
+
+void gui_eod::on_cb_check_all_stateChanged(int arg1)
+{
+    Qt::CheckState state = arg1 ? Qt::Checked : Qt::Unchecked;
+    for(int i = 0; i < ui->lw_objects->count(); ++i){
+        ui->lw_objects->item(i)->setCheckState(state);
+    }
+
+}
+
+void gui_eod::on_pb_refresh_clicked()
+{
+
+}
+

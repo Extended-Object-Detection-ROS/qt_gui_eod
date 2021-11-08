@@ -24,6 +24,8 @@ private slots:
 
     void on_pb_detect_clicked();
 
+    void on_cb_check_all_stateChanged(int arg1);
+
 private:
     Ui::gui_eod *ui;
 
