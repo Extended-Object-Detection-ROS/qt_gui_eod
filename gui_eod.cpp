@@ -10,7 +10,7 @@ gui_eod::gui_eod(QWidget *parent)
     , ui(new Ui::gui_eod)
 {
     ui->setupUi(this);
-
+    ui->l_image->setContextMenuPolicy(Qt::CustomContextMenu);
 
 }
 
@@ -27,12 +27,14 @@ void gui_eod::resizeEvent(QResizeEvent* event)
 
 void gui_eod::on_pb_openImage_clicked()
 {
-    QString fileName = QFileDialog::getOpenFileName(this,
+    last_image_path = QFileDialog::getOpenFileName(this,
         tr("Open Image"), "/home", tr("Image Files (*.png *.jpg *.jpeg *.bmp)"));
-    source_image = QPixmap(fileName);
+    source_image = QPixmap(last_image_path);
 
-    if( source_image.isNull() )
+    if( source_image.isNull() ){
+        last_image_path = "";
         return;
+    }
 
     display_image(source_image);
     check_ready();
@@ -122,5 +124,41 @@ void gui_eod::on_cb_check_all_stateChanged(int arg1)
 void gui_eod::on_pb_refresh_clicked()
 {
 
+}
+
+
+void gui_eod::on_l_image_customContextMenuRequested(const QPoint &pos)
+{
+    if( current_display_image.isNull())
+        return;
+    if( last_image_path == "") // should not be is current_display_image is not null, but for extra safety
+        return;
+    //QMenu contextMenu(tr("Context menu"), this);
+    QMenu contextMenu(tr("Context menu"), ui->l_image);
+
+    //QAction action1("Save image as...", this);
+    QAction action1("Save image as...", ui->l_image);
+
+    connect(&action1, SIGNAL(triggered()), this, SLOT(save_image()));
+    contextMenu.addAction(&action1);
+
+    //contextMenu.exec(mapToGlobal(pos));// wrong pose
+    contextMenu.exec(mapToGlobal(pos) + QPoint(ui->gb_control->size().width(), 0));// kostylish but best
+    //contextMenu.exec(mapFromParent(pos));// too wrong pose
+    //contextMenu.exec(pos);//wrong pose
+    //contextMenu.exec(mapTo(ui->l_image,pos));//crashes
+    //contextMenu.exec(ui->l_image->viewport()->mapToGlobal(pos));
+}
+
+void gui_eod::save_image(){
+
+    std::string stdstr = last_image_path.toStdString();
+    std::size_t lastIndex = stdstr.find_last_of(".");
+    stdstr.insert(lastIndex, "_detected");
+
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"),
+                                                    QString::fromStdString(stdstr),
+                                                    tr("Images (*.png *.bmp *.jpg *.jpeg)"));
+    current_display_image.save(fileName);
 }
 

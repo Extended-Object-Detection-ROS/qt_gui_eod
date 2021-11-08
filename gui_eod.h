@@ -26,6 +26,12 @@ private slots:
 
     void on_cb_check_all_stateChanged(int arg1);
 
+    void on_pb_refresh_clicked();
+
+    void on_l_image_customContextMenuRequested(const QPoint &pos);
+
+    void save_image();
+
 private:
     Ui::gui_eod *ui;
 
@@ -40,5 +46,6 @@ private:
     void check_ready();
 
     void from_base_to_list_view();
+    QString last_image_path;
 };
 #endif // GUI_EOD_H
