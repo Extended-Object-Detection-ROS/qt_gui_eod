@@ -27,12 +27,16 @@ private slots:
 private:
     Ui::gui_eod *ui;
 
-    eod::ObjectBase * objectBase;
+    eod::ObjectBase * objectBase = NULL;
 
     QPixmap source_image;
     QPixmap current_display_image;
 
     void display_image(QPixmap& im);
     void resizeEvent(QResizeEvent*);
+
+    void check_ready();
+
+    void from_base_to_list_view();
 };
 #endif // GUI_EOD_H
