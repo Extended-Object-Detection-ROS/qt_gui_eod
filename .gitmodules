@@ -1,3 +1,6 @@
 [submodule "lib"]
 	path = lib
 	url = git@github.com:Extended-Object-Detection-ROS/lib.git
+[submodule "tinyxml"]
+	path = tinyxml
+	url = git@github.com:Extended-Object-Detection-ROS/tinyxml.git

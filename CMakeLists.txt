@@ -14,12 +14,64 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets REQUIRED)
 find_package(OpenCV REQUIRED)
+#find_package(TinyXML REQUIRED)
+
+set( tinyxml_srcs tinyxml/tinyxml.cpp tinyxml/tinyxmlparser.cpp tinyxml/tinyxmlerror.cpp tinyxml/tinystr.cpp )
+
+set( eod_srcs
+    lib/ObjectBase.cpp
+    # types
+    lib/types/ComplexObjectGraph.cpp
+    lib/types/ComplexObject.cpp
+    lib/types/ExtendedObjectInfo.cpp
+    lib/types/Attribute.cpp
+    lib/types/SimpleObject.cpp
+    lib/types/Tracker.cpp
+    lib/types/Relationship.cpp
+    lib/types/Filtering.cpp
+    lib/types/Clusterization.cpp
+    # lib utils
+    lib/utils/geometry_utils.cpp
+    lib/utils/drawing_utils.cpp
+    lib/utils/contour_utils.cpp
+    # lib detectors
+    lib/detectors/HsvColorDetector.cpp
+    lib/detectors/HaarCascadeDetector.cpp
+    lib/detectors/SizeDetector.cpp
+    lib/detectors/HistColorDetector.cpp
+    lib/detectors/DimentionDetector.cpp
+    lib/detectors/HoughDetector.cpp
+    lib/detectors/BasicMotionDetector.cpp
+    lib/detectors/ArucoDetector.cpp
+    lib/detectors/PoseDetector.cpp
+    lib/detectors/TensorFlowDetector.cpp
+    lib/detectors/FeatureDetector.cpp
+    lib/detectors/DnnDetector.cpp
+    lib/detectors/QrDetector.cpp
+    lib/detectors/QrZbarDetector.cpp
+    lib/detectors/LogicDetector.cpp
+    lib/detectors/BlobDetector.cpp
+    lib/detectors/DepthDetector.cpp
+    lib/detectors/RoughDistanceDetector.cpp
+    lib/detectors/DistanceDetector.cpp
+    lib/detectors/FaceDlibDetector.cpp
+    lib/detectors/ExtractedInfoIdChecker.cpp
+    lib/detectors/ExtractedInfoStringChecker.cpp
+
+    # lib relations
+    lib/relations/ImageRangeRelation.cpp
+    lib/relations/LogicRelations.cpp
+    lib/relations/ThreeDimRangeRelation.cpp
+    lib/relations/SpaceRelations.cpp
+    )
 
 set(PROJECT_SOURCES
         main.cpp
         gui_eod.cpp
         gui_eod.h
         gui_eod.ui
+        ${tinyxml_srcs}
+        ${eod_srcs}
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
@@ -48,9 +100,22 @@ endif()
 target_include_directories(
     qt_gui_eod
     PRIVATE
-    ${OpenCV_INCLUDE_DIRS})
+    lib/include
+    lib/detectors/include
+    lib/relations/include
+    lib/utils/include
+    lib/types/include
+    tinyxml/
+    ${OpenCV_INCLUDE_DIRS}
+    #${TinyXML_INCLUDE_DIRS}
+    )
 
-target_link_libraries(qt_gui_eod PRIVATE Qt${QT_VERSION_MAJOR}::Widgets ${OpenCV_LIBRARIES})
+target_link_libraries(qt_gui_eod
+    PRIVATE
+    Qt${QT_VERSION_MAJOR}::Widgets
+    ${OpenCV_LIBRARIES}
+    #${TinyXML_LIBRARIES}
+    )
 
 set_target_properties(qt_gui_eod PROPERTIES
     MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com

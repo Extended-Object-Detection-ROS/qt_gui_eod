@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <opencv2/opencv.hpp>
+#include "ObjectBase.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class gui_eod; }
