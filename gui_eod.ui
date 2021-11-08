@@ -57,8 +57,14 @@
        </item>
        <item row="2" column="0">
         <widget class="QCheckBox" name="cb_check_all">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
          <property name="text">
           <string>Check all</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
          </property>
         </widget>
        </item>

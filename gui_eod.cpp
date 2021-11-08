@@ -68,6 +68,7 @@ void gui_eod::on_pb_openBase_clicked()
     }
 
     from_base_to_list_view();
+    ui->cb_check_all->setEnabled(true);
 
     // to editor
     QFile base(fileName);
