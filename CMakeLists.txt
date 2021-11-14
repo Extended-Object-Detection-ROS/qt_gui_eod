@@ -74,6 +74,8 @@ set(PROJECT_SOURCES
         gui_eod.h
         gui_eod.ui
         asmOpenCV.h
+        XML_highlighter.h
+        XML_highlighter.cpp
         ${tinyxml_srcs}
         ${eod_srcs}
 )

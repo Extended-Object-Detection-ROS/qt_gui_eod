@@ -79,9 +79,10 @@ void gui_eod::on_pb_openBase_clicked()
     QFile base(fileName);
     if(!base.open(QIODevice::ReadOnly)) {
         QMessageBox::information(0, "error", base.errorString());
-    }
+    }    
+    highlighter = new XML_Highlighter(ui->te_ob_editor->document());
     QTextStream in(&base);
-    ui->te_ob_editor->setText(in.readAll());
+    ui->te_ob_editor->setPlainText(in.readAll());
     ui->pb_refresh->setEnabled(false);
 
     check_ready();
