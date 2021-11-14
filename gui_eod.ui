@@ -27,7 +27,7 @@
           <bool>false</bool>
          </property>
          <property name="text">
-          <string>Refresh</string>
+          <string>Refresh objects</string>
          </property>
         </widget>
        </item>

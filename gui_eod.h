@@ -5,6 +5,8 @@
 #include <opencv2/opencv.hpp>
 #include "ObjectBase.h"
 #include "XML_highlighter.h"
+#include <QFile>
+#include <QElapsedTimer>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class gui_eod; }
@@ -61,5 +63,9 @@ private:
     size_t seq;
 
     XML_Highlighter *highlighter;
+    QElapsedTimer timer;
+
+    QFile* log_file;
+    QTextStream* log_stream;
 };
 #endif // GUI_EOD_H

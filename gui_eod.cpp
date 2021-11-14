@@ -13,7 +13,17 @@ gui_eod::gui_eod(QWidget *parent)
     ui->setupUi(this);
     ui->l_image->setContextMenuPolicy(Qt::CustomContextMenu);
     seq = 0;
-    display_log("Application started successfully", LOG_INFO);
+
+
+    log_file = new QFile(QDateTime::currentDateTime().toString("yyyy_MM_dd_hh_mm")+".log" );
+    if (log_file->open(QIODevice::ReadWrite)) {
+        log_stream = new QTextStream(log_file);
+        display_log("Application started successfully", LOG_INFO);
+    }
+    else{
+        log_file = NULL;
+        display_log("Can't create log file.", LOG_WARN);
+    }
 }
 
 gui_eod::~gui_eod()
@@ -34,12 +44,14 @@ void gui_eod::on_pb_openImage_clicked()
     source_image = QPixmap(last_image_path);
 
     if( source_image.isNull() ){
+        display_log("Failed to open image at path "+last_image_path, LOG_ERROR);
         last_image_path = "";
         return;
     }
 
     display_image(source_image);
     check_ready();
+    display_log("Opened image at path "+last_image_path);
 }
 
 void gui_eod::display_image(QPixmap& im)
@@ -67,6 +79,7 @@ void gui_eod::on_pb_openBase_clicked()
     objectBase = new eod::ObjectBase();
     if( !objectBase->loadFromXML(fileName.toStdString()) ){
         objectBase = NULL;
+        display_log("Failure to open objectbase at path "+fileName, LOG_ERROR);
         return;
     }
 
@@ -84,7 +97,7 @@ void gui_eod::on_pb_openBase_clicked()
     QTextStream in(&base);
     ui->te_ob_editor->setPlainText(in.readAll());
     ui->pb_refresh->setEnabled(false);
-
+    display_log("Opened objectbase at path "+fileName);
     check_ready();
 }
 
@@ -106,7 +119,7 @@ void gui_eod::on_pb_detect_clicked()
     seq ++;
 
     // TODO: from editor to object base
-
+    timer.start();
     for( int i = 0 ; i < objectBase->simple_objects.size(); i++){
         if(ui->lw_objects->item(i)->checkState() == Qt::Checked){
             objectBase->simple_objects[i]->Identify(frame, cv::Mat(), seq);
@@ -121,6 +134,7 @@ void gui_eod::on_pb_detect_clicked()
         }
     }
 #endif
+    display_log("Detected "+QString::number(objects_to_detect) + " objects in " + QString::number(timer.elapsed())+" ms.");
 
     QPixmap detected_image = ASM::cvMatToQPixmap(image2draw);
     display_image(detected_image);
@@ -179,7 +193,6 @@ void gui_eod::on_pb_refresh_clicked()
     from_base_to_list_view();
 }
 
-
 void gui_eod::on_l_image_customContextMenuRequested(const QPoint &pos)
 {
     if( current_display_image.isNull())
@@ -213,7 +226,6 @@ void gui_eod::save_image(){
     current_display_image.save(fileName);
 }
 
-
 void gui_eod::on_cb_check_all_complex_clicked()
 {
     Qt::CheckState state = ui->cb_check_all_complex->isChecked() ? Qt::Checked : Qt::Unchecked;
@@ -221,7 +233,6 @@ void gui_eod::on_cb_check_all_complex_clicked()
         ui->lw_objects->item(i + objectBase->simple_objects.size())->setCheckState(state);
     }
 }
-
 
 void gui_eod::on_te_ob_editor_textChanged()
 {
@@ -241,5 +252,8 @@ void gui_eod::display_log(QString log, LOG_TYPES type){
     else if( type == LOG_ERROR)
         color = "red";
     ui->le_logger->setStyleSheet("color: "+color);
-
+    if( log_file){
+        *log_stream << date_prefix;
+        *log_stream << log << Qt::endl;
+    }
 }
