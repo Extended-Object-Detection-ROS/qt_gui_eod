@@ -81,6 +81,7 @@ void gui_eod::on_pb_openBase_clicked()
     }
     QTextStream in(&base);
     ui->te_ob_editor->setText(in.readAll());
+    ui->pb_refresh->setEnabled(false);
 
     check_ready();
 }
@@ -116,6 +117,7 @@ void gui_eod::on_pb_detect_clicked()
 void gui_eod::from_base_to_list_view(){
     if( !objectBase )
         return;
+    ui->lw_objects->clear();
     for(auto so : objectBase->simple_objects){
         ui->lw_objects->addItem(QString::fromStdString(so->name));
     }
@@ -125,18 +127,23 @@ void gui_eod::from_base_to_list_view(){
     }
 #endif
     QListWidgetItem* item = 0;
-    for(int i = 0; i < ui->lw_objects->count(); ++i){
+    //for(int i = 0; i < ui->lw_objects->count(); ++i){
+    for(int i = 0; i < objectBase->simple_objects.size(); i++){
         item = ui->lw_objects->item(i);
         item->setFlags(item->flags() | Qt::ItemIsUserCheckable);
-        item->setCheckState(Qt::Checked);
+        ui->cb_check_all->isChecked() ? item->setCheckState(Qt::Checked) : item->setCheckState(Qt::Unchecked);
+    }
+    for(int i = 0; i < objectBase->complex_objects_graph.size(); i++){
+        item = ui->lw_objects->item(i + objectBase->simple_objects.size());
+        item->setFlags(item->flags() | Qt::ItemIsUserCheckable);
+        ui->cb_check_all->isChecked() ? item->setCheckState(Qt::Checked) : item->setCheckState(Qt::Unchecked);
     }
 
 }
 
 void gui_eod::on_cb_check_all_stateChanged(int arg1)
 {
-    Qt::CheckState state = arg1 ? Qt::Checked : Qt::Unchecked;
-    //for(int i = 0; i < ui->lw_objects->count(); ++i){
+    Qt::CheckState state = arg1 ? Qt::Checked : Qt::Unchecked;    
     for(int i = 0; i < objectBase->simple_objects.size(); i++){
         ui->lw_objects->item(i)->setCheckState(state);
     }
@@ -145,7 +152,10 @@ void gui_eod::on_cb_check_all_stateChanged(int arg1)
 
 void gui_eod::on_pb_refresh_clicked()
 {
-
+    ui->pb_refresh->setEnabled(false);
+    objectBase->clear();
+    objectBase->loadFromTextData(ui->te_ob_editor->toPlainText().toStdString(),  objectBase->getPath());
+    from_base_to_list_view();
 }
 
 
@@ -155,10 +165,8 @@ void gui_eod::on_l_image_customContextMenuRequested(const QPoint &pos)
         return;
     if( last_image_path == "") // should not be is current_display_image is not null, but for extra safety
         return;
-    //QMenu contextMenu(tr("Context menu"), this);
-    QMenu contextMenu(tr("Context menu"), ui->l_image);
 
-    //QAction action1("Save image as...", this);
+    QMenu contextMenu(tr("Context menu"), ui->l_image);
     QAction action1("Save image as...", ui->l_image);
 
     connect(&action1, SIGNAL(triggered()), this, SLOT(save_image()));
@@ -191,5 +199,11 @@ void gui_eod::on_cb_check_all_complex_clicked()
     for(int i = 0; i < objectBase->complex_objects_graph.size(); i++){
         ui->lw_objects->item(i + objectBase->simple_objects.size())->setCheckState(state);
     }
+}
+
+
+void gui_eod::on_te_ob_editor_textChanged()
+{
+    ui->pb_refresh->setEnabled(true);
 }
 

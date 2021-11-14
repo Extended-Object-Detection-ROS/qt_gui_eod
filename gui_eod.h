@@ -34,6 +34,8 @@ private slots:
 
     void on_cb_check_all_complex_clicked();
 
+    void on_te_ob_editor_textChanged();
+
 private:
     Ui::gui_eod *ui;
 
