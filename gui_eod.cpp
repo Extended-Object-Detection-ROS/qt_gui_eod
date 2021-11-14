@@ -4,6 +4,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <asmOpenCV.h>
+#include <QXmlStreamReader>
 
 gui_eod::gui_eod(QWidget *parent)
     : QMainWindow(parent)
@@ -152,6 +153,14 @@ void gui_eod::on_cb_check_all_stateChanged(int arg1)
 
 void gui_eod::on_pb_refresh_clicked()
 {
+    QXmlStreamReader xml_checker(ui->te_ob_editor->toPlainText());
+    while (!xml_checker.atEnd()) {
+        xml_checker.readNext();
+    }
+    if( xml_checker.hasError() ){
+        return;
+    }
+
     ui->pb_refresh->setEnabled(false);
     objectBase->clear();
     objectBase->loadFromTextData(ui->te_ob_editor->toPlainText().toStdString(),  objectBase->getPath());
