@@ -9,6 +9,8 @@ QT_BEGIN_NAMESPACE
 namespace Ui { class gui_eod; }
 QT_END_NAMESPACE
 
+enum LOG_TYPES {LOG_INFO, LOG_WARN, LOG_ERROR};
+
 class gui_eod : public QMainWindow
 {
     Q_OBJECT
@@ -50,6 +52,9 @@ private:
     void check_ready();
 
     void from_base_to_list_view();
+
+    void display_log(QString log, LOG_TYPES type = LOG_INFO);
+
     QString last_image_path;
 
     size_t seq;

@@ -13,7 +13,7 @@ gui_eod::gui_eod(QWidget *parent)
     ui->setupUi(this);
     ui->l_image->setContextMenuPolicy(Qt::CustomContextMenu);
     seq = 0;
-
+    display_log("Application started successfully", LOG_INFO);
 }
 
 gui_eod::~gui_eod()
@@ -89,6 +89,16 @@ void gui_eod::on_pb_openBase_clicked()
 
 void gui_eod::on_pb_detect_clicked()
 {
+    int objects_to_detect = 0;
+    for(int i = 0; i < ui->lw_objects->count(); ++i){
+        if( ui->lw_objects->item(i)->checkState() == Qt::Checked)
+            objects_to_detect++;
+    }
+    if( objects_to_detect == 0){
+        display_log("No objects are selected", LOG_WARN);
+        return;
+    }
+
     cv::Mat frame = ASM::QPixmapToCvMat(source_image);
     cv::Mat image2draw = frame.clone();
 
@@ -158,6 +168,7 @@ void gui_eod::on_pb_refresh_clicked()
         xml_checker.readNext();
     }
     if( xml_checker.hasError() ){
+        display_log("XML is not well formed! ObjectBase hasn't been updated.", LOG_ERROR);
         return;
     }
 
@@ -216,3 +227,18 @@ void gui_eod::on_te_ob_editor_textChanged()
     ui->pb_refresh->setEnabled(true);
 }
 
+void gui_eod::display_log(QString log, LOG_TYPES type){
+    ui->le_logger->clear();
+    QString date_prefix = QDateTime::currentDateTime().toString("[hh:mm:ss] ");
+    ui->le_logger->setText(date_prefix+log);
+    // TODO to log file
+    QString color;
+    if( type == LOG_INFO)
+        color = "black";
+    else if( type == LOG_WARN)
+        color = "orange";
+    else if( type == LOG_ERROR)
+        color = "red";
+    ui->le_logger->setStyleSheet("color: "+color);
+
+}
