@@ -32,6 +32,8 @@ private slots:
 
     void save_image();
 
+    void on_cb_check_all_complex_clicked();
+
 private:
     Ui::gui_eod *ui;
 
@@ -47,5 +49,7 @@ private:
 
     void from_base_to_list_view();
     QString last_image_path;
+
+    size_t seq;
 };
 #endif // GUI_EOD_H

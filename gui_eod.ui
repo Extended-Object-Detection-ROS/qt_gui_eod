@@ -61,7 +61,7 @@
           <bool>false</bool>
          </property>
          <property name="text">
-          <string>Check all</string>
+          <string>Check simple</string>
          </property>
          <property name="checked">
           <bool>true</bool>
@@ -70,6 +70,19 @@
        </item>
        <item row="3" column="0" colspan="2">
         <widget class="QListWidget" name="lw_objects"/>
+       </item>
+       <item row="2" column="1">
+        <widget class="QCheckBox" name="cb_check_all_complex">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="text">
+          <string>Check Complex</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>

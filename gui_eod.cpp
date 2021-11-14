@@ -11,6 +11,7 @@ gui_eod::gui_eod(QWidget *parent)
 {
     ui->setupUi(this);
     ui->l_image->setContextMenuPolicy(Qt::CustomContextMenu);
+    seq = 0;
 
 }
 
@@ -52,8 +53,9 @@ void gui_eod::display_image(QPixmap& im)
 }
 
 void gui_eod::check_ready(){
-    if(objectBase != NULL && !source_image.isNull()  )
+    if(objectBase != NULL && !source_image.isNull()  ){
         ui->pb_detect->setEnabled(true);
+    }
 }
 
 void gui_eod::on_pb_openBase_clicked()
@@ -69,7 +71,9 @@ void gui_eod::on_pb_openBase_clicked()
 
     from_base_to_list_view();
     ui->cb_check_all->setEnabled(true);
-
+#ifdef USE_IGRAPH
+    ui->cb_check_all_complex->setEnabled(true);
+#endif
     // to editor
     QFile base(fileName);
     if(!base.open(QIODevice::ReadOnly)) {
@@ -86,14 +90,25 @@ void gui_eod::on_pb_detect_clicked()
     cv::Mat frame = ASM::QPixmapToCvMat(source_image);
     cv::Mat image2draw = frame.clone();
 
+    seq ++;
+
     // TODO: from editor to object base
 
     for( int i = 0 ; i < objectBase->simple_objects.size(); i++){
         if(ui->lw_objects->item(i)->checkState() == Qt::Checked){
-            objectBase->simple_objects[i]->Identify(frame, cv::Mat());
+            objectBase->simple_objects[i]->Identify(frame, cv::Mat(), seq);
             objectBase->simple_objects[i]->draw(image2draw,cv::Scalar(0,255,0));
         }
     }
+#ifdef USE_IGRAPH
+    for( int i = 0 ; i < objectBase->complex_objects_graph.size(); i++){
+        if(ui->lw_objects->item(i+objectBase->simple_objects.size())->checkState() == Qt::Checked){
+            objectBase->complex_objects_graph[i]->Identify(frame, cv::Mat(), seq);
+            objectBase->complex_objects_graph[i]->drawAll(image2draw, cv::Scalar(255,255,0), 2);
+        }
+    }
+#endif
+
     QPixmap detected_image = ASM::cvMatToQPixmap(image2draw);
     display_image(detected_image);
 }
@@ -104,6 +119,11 @@ void gui_eod::from_base_to_list_view(){
     for(auto so : objectBase->simple_objects){
         ui->lw_objects->addItem(QString::fromStdString(so->name));
     }
+#ifdef USE_IGRAPH
+    for(auto co : objectBase->complex_objects_graph){
+        ui->lw_objects->addItem(QString::fromStdString(co->name));
+    }
+#endif
     QListWidgetItem* item = 0;
     for(int i = 0; i < ui->lw_objects->count(); ++i){
         item = ui->lw_objects->item(i);
@@ -116,7 +136,8 @@ void gui_eod::from_base_to_list_view(){
 void gui_eod::on_cb_check_all_stateChanged(int arg1)
 {
     Qt::CheckState state = arg1 ? Qt::Checked : Qt::Unchecked;
-    for(int i = 0; i < ui->lw_objects->count(); ++i){
+    //for(int i = 0; i < ui->lw_objects->count(); ++i){
+    for(int i = 0; i < objectBase->simple_objects.size(); i++){
         ui->lw_objects->item(i)->setCheckState(state);
     }
 
@@ -161,5 +182,14 @@ void gui_eod::save_image(){
                                                     QString::fromStdString(stdstr),
                                                     tr("Images (*.png *.bmp *.jpg *.jpeg)"));
     current_display_image.save(fileName);
+}
+
+
+void gui_eod::on_cb_check_all_complex_clicked()
+{
+    Qt::CheckState state = ui->cb_check_all_complex->isChecked() ? Qt::Checked : Qt::Unchecked;
+    for(int i = 0; i < objectBase->complex_objects_graph.size(); i++){
+        ui->lw_objects->item(i + objectBase->simple_objects.size())->setCheckState(state);
+    }
 }
 

@@ -16,6 +16,8 @@ find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets REQUIRED)
 find_package(OpenCV REQUIRED)
 #find_package(TinyXML REQUIRED)
 
+set(igraph ON)
+
 set( tinyxml_srcs tinyxml/tinyxml.cpp tinyxml/tinyxmlparser.cpp tinyxml/tinyxmlerror.cpp tinyxml/tinystr.cpp )
 
 set( eod_srcs
@@ -99,6 +101,12 @@ else()
     endif()
 endif()
 
+if(igraph)
+    target_compile_definitions(qt_gui_eod PUBLIC USE_IGRAPH)
+    set( IGRAPH_INCLUDE_DIRS /usr/local/src/igraph-0.7.1/include/)
+    set( IGRAPH_LIBRARIES /usr/local/lib/libigraph.so)
+endif(igraph)
+
 target_include_directories(
     qt_gui_eod
     PRIVATE
@@ -110,6 +118,7 @@ target_include_directories(
     tinyxml/
     ${OpenCV_INCLUDE_DIRS}
     #${TinyXML_INCLUDE_DIRS}
+    ${IGRAPH_INCLUDE_DIRS}
     )
 
 target_link_libraries(qt_gui_eod
@@ -117,6 +126,7 @@ target_link_libraries(qt_gui_eod
     Qt${QT_VERSION_MAJOR}::Widgets
     ${OpenCV_LIBRARIES}
     #${TinyXML_LIBRARIES}
+    ${IGRAPH_LIBRARIES}
     )
 
 set_target_properties(qt_gui_eod PROPERTIES
