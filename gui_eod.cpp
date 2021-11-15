@@ -6,6 +6,7 @@
 #include <asmOpenCV.h>
 #include <QXmlStreamReader>
 
+
 gui_eod::gui_eod(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::gui_eod)
@@ -13,6 +14,7 @@ gui_eod::gui_eod(QWidget *parent)
     ui->setupUi(this);
     ui->l_image->setContextMenuPolicy(Qt::CustomContextMenu);
     seq = 0;
+
 
 
     log_file = new QFile(QDateTime::currentDateTime().toString("yyyy_MM_dd_hh_mm")+".log" );
@@ -179,18 +181,20 @@ void gui_eod::on_cb_check_all_stateChanged(int arg1)
 void gui_eod::on_pb_refresh_clicked()
 {
     QXmlStreamReader xml_checker(ui->te_ob_editor->toPlainText());
-    while (!xml_checker.atEnd()) {
+    while (!xml_checker.atEnd()) {        
+        if( xml_checker.hasError() ){
+            display_log("XML is not well formed! ObjectBase hasn't been updated.", LOG_ERROR);
+            return;
+        }
         xml_checker.readNext();
     }
-    if( xml_checker.hasError() ){
-        display_log("XML is not well formed! ObjectBase hasn't been updated.", LOG_ERROR);
-        return;
-    }
+
 
     ui->pb_refresh->setEnabled(false);
     objectBase->clear();
     objectBase->loadFromTextData(ui->te_ob_editor->toPlainText().toStdString(),  objectBase->getPath());
     from_base_to_list_view();
+    display_log("ObjectBase successfully refreshed");
 }
 
 void gui_eod::on_l_image_customContextMenuRequested(const QPoint &pos)
