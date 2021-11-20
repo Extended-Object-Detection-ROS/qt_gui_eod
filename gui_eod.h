@@ -41,6 +41,8 @@ private slots:
 
     void on_te_ob_editor_textChanged();
 
+    void on_pb_save_base_clicked();
+
 private:
     Ui::gui_eod *ui;
 

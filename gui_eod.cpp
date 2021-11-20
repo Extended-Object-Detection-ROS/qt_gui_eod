@@ -93,7 +93,9 @@ void gui_eod::on_pb_openBase_clicked()
     // to editor
     QFile base(fileName);
     if(!base.open(QIODevice::ReadOnly)) {
-        QMessageBox::information(0, "error", base.errorString());
+        //QMessageBox::information(0, "error", base.errorString());
+        display_log("Failure to load base to editor", LOG_ERROR);
+        return;
     }    
     highlighter = new XML_Highlighter(ui->te_ob_editor->document());
     QTextStream in(&base);
@@ -224,7 +226,7 @@ void gui_eod::save_image(){
     std::size_t lastIndex = stdstr.find_last_of(".");
     stdstr.insert(lastIndex, "_detected");
 
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"),
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save Image"),
                                                     QString::fromStdString(stdstr),
                                                     tr("Images (*.png *.bmp *.jpg *.jpeg)"));
     current_display_image.save(fileName);
@@ -241,6 +243,7 @@ void gui_eod::on_cb_check_all_complex_clicked()
 void gui_eod::on_te_ob_editor_textChanged()
 {
     ui->pb_refresh->setEnabled(true);
+    ui->pb_save_base->setEnabled(true);
 }
 
 void gui_eod::display_log(QString log, LOG_TYPES type){
@@ -261,3 +264,22 @@ void gui_eod::display_log(QString log, LOG_TYPES type){
         *log_stream << log << Qt::endl;
     }
 }
+
+void gui_eod::on_pb_save_base_clicked()
+{
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save Object Base"),
+                                                    "/home",
+                                                    tr("XML-files (*.xml)"));
+
+    QFile base(fileName);
+    if(!base.open(QIODevice::WriteOnly)){
+        display_log("Failed to save object base at path "+fileName, LOG_ERROR);
+    }
+    else{
+        QTextStream stream(&base);
+        stream << ui->te_ob_editor->toPlainText();
+        ui->pb_save_base->setEnabled(false);
+    }
+
+}
+
