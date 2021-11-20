@@ -41,8 +41,14 @@ void gui_eod::resizeEvent(QResizeEvent* event)
 
 void gui_eod::on_pb_openImage_clicked()
 {
-    last_image_path = QFileDialog::getOpenFileName(this,
+    QString fileName = QFileDialog::getOpenFileName(this,
         tr("Open Image"), "/home", tr("Image Files (*.png *.jpg *.jpeg *.bmp)"));
+
+    if( fileName == ""){
+        display_log("Opening image canceled", LOG_WARN);
+        return;
+    }
+    last_image_path = fileName;
     source_image = QPixmap(last_image_path);
 
     if( source_image.isNull() ){
@@ -78,6 +84,11 @@ void gui_eod::on_pb_openBase_clicked()
     QString fileName = QFileDialog::getOpenFileName(this,
         tr("Open Object Base"), "/home", tr("XML Files (*.xml)"));
 
+    if( fileName == ""){
+        display_log("Opening Object Base canceled", LOG_WARN);
+        return;
+    }
+
     objectBase = new eod::ObjectBase();
     if( !objectBase->loadFromXML(fileName.toStdString()) ){
         objectBase = NULL;
@@ -101,9 +112,11 @@ void gui_eod::on_pb_openBase_clicked()
     QTextStream in(&base);
     ui->te_ob_editor->setPlainText(in.readAll());
     ui->pb_refresh->setEnabled(false);
+    ui->pb_save_base_2->setEnabled(false);
     display_log("Opened objectbase at path "+fileName);
     check_ready();
     ui->l_base_path->setText(fileName);
+    last_base_path = fileName;
 }
 
 void gui_eod::on_pb_detect_clicked()
@@ -193,7 +206,7 @@ void gui_eod::on_pb_refresh_clicked()
     }
 
 
-    ui->pb_refresh->setEnabled(false);
+    ui->pb_refresh->setEnabled(false);    
     objectBase->clear();
     objectBase->loadFromTextData(ui->te_ob_editor->toPlainText().toStdString(),  objectBase->getPath());
     from_base_to_list_view();
@@ -230,6 +243,12 @@ void gui_eod::save_image(){
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save Image"),
                                                     QString::fromStdString(stdstr),
                                                     tr("Images (*.png *.bmp *.jpg *.jpeg)"));
+
+    if( fileName == ""){
+        display_log("Saving detected image canceled", LOG_WARN);
+        return;
+    }
+
     current_display_image.save(fileName);
 }
 
@@ -244,7 +263,8 @@ void gui_eod::on_cb_check_all_complex_clicked()
 void gui_eod::on_te_ob_editor_textChanged()
 {
     ui->pb_refresh->setEnabled(true);
-    ui->pb_save_base->setEnabled(true);
+    //ui->pb_save_base->setEnabled(true);
+    ui->pb_save_base_2->setEnabled(true);
 }
 
 void gui_eod::display_log(QString log, LOG_TYPES type){
@@ -266,11 +286,17 @@ void gui_eod::display_log(QString log, LOG_TYPES type){
     }
 }
 
+// SAVE AS!
 void gui_eod::on_pb_save_base_clicked()
 {
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save Object Base"),
-                                                    "/home",
+                                                    last_base_path,
                                                     tr("XML-files (*.xml)"));
+    if( fileName == ""){
+        display_log("Saving Object Base canceled", LOG_WARN);
+        return;
+    }
+
 
     QFile base(fileName);
     if(!base.open(QIODevice::WriteOnly)){
@@ -279,7 +305,27 @@ void gui_eod::on_pb_save_base_clicked()
     else{
         QTextStream stream(&base);
         stream << ui->te_ob_editor->toPlainText();
-        ui->pb_save_base->setEnabled(false);
+        //ui->pb_save_base->setEnabled(false);
+    }
+
+}
+
+// JUST SAVE
+void gui_eod::on_pb_save_base_2_clicked()
+{
+    if( last_base_path == ""){
+        display_log("Can't save base!", LOG_ERROR);
+        return;
+    }
+    QFile base(last_base_path);
+    if(!base.open(QIODevice::WriteOnly)){
+        display_log("Failed to save object base at path "+last_base_path, LOG_ERROR);
+    }
+    else{
+        QTextStream stream(&base);
+        stream << ui->te_ob_editor->toPlainText();
+        display_log("Successfully saved object base at path "+last_base_path, LOG_INFO);
+        ui->pb_save_base_2->setEnabled(false);
     }
 
 }

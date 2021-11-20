@@ -43,6 +43,8 @@ private slots:
 
     void on_pb_save_base_clicked();
 
+    void on_pb_save_base_2_clicked();
+
 private:
     Ui::gui_eod *ui;
 
@@ -61,6 +63,7 @@ private:
     void display_log(QString log, LOG_TYPES type = LOG_INFO);
 
     QString last_image_path;
+    QString last_base_path;
 
     size_t seq;
 
