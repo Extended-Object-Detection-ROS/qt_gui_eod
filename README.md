@@ -14,7 +14,7 @@ Allows:
 # Install 
 (tested on Linux Kubuntu 20.04 LTS with installed OpenCV 4.2.0)
 
-1. Clone this repository locally
+1. Clone this repository locally (last release)
 ```bash
 git clone --recurse-submodules https://github.com/Extended-Object-Detection-ROS/qt_gui_eod -b r1.0.0
 ```
