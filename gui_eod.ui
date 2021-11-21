@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>gui_eod</string>
   </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>eod_icon.png</normaloff>eod_icon.png</iconset>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout" rowstretch="2,1,0" columnstretch="1,2">
     <item row="0" column="0">
