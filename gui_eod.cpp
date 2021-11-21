@@ -177,12 +177,13 @@ void gui_eod::from_base_to_list_view(){
         item->setFlags(item->flags() | Qt::ItemIsUserCheckable);
         ui->cb_check_all->isChecked() ? item->setCheckState(Qt::Checked) : item->setCheckState(Qt::Unchecked);
     }
+#ifdef USE_IGRAPH
     for(int i = 0; i < objectBase->complex_objects_graph.size(); i++){
         item = ui->lw_objects->item(i + objectBase->simple_objects.size());
         item->setFlags(item->flags() | Qt::ItemIsUserCheckable);
         ui->cb_check_all->isChecked() ? item->setCheckState(Qt::Checked) : item->setCheckState(Qt::Unchecked);
     }
-
+#endif
 }
 
 void gui_eod::on_cb_check_all_stateChanged(int arg1)
@@ -254,11 +255,14 @@ void gui_eod::save_image(){
 
 void gui_eod::on_cb_check_all_complex_clicked()
 {
+#ifdef USE_IGRAPH
     Qt::CheckState state = ui->cb_check_all_complex->isChecked() ? Qt::Checked : Qt::Unchecked;
     for(int i = 0; i < objectBase->complex_objects_graph.size(); i++){
         ui->lw_objects->item(i + objectBase->simple_objects.size())->setCheckState(state);
     }
+#endif
 }
+
 
 void gui_eod::on_te_ob_editor_textChanged()
 {

@@ -16,7 +16,7 @@ find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets REQUIRED)
 find_package(OpenCV REQUIRED)
 #find_package(TinyXML REQUIRED)
 
-set(igraph ON)
+set(igraph OFF)
 
 set( tinyxml_srcs tinyxml/tinyxml.cpp tinyxml/tinyxmlparser.cpp tinyxml/tinyxmlerror.cpp tinyxml/tinystr.cpp )
 
