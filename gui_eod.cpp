@@ -113,6 +113,7 @@ void gui_eod::on_pb_openBase_clicked()
     ui->te_ob_editor->setPlainText(in.readAll());
     ui->pb_refresh->setEnabled(false);
     ui->pb_save_base_2->setEnabled(false);
+    ui->pb_save_base->setEnabled(true);
     display_log("Opened objectbase at path "+fileName);
     check_ready();
     ui->l_base_path->setText(fileName);
