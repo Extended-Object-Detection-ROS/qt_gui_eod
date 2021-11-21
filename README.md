@@ -32,7 +32,7 @@ make check
 sudo make install
 ```
 In CMakeLists.txt at 19 line change on:
-```
+```cmake
 set(igraph ON)
 ```
 3. Open CMakeLists.txt in qt-creator, build and run program
