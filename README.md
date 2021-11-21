@@ -13,11 +13,27 @@ Allows:
 
 # Install
 1. Clone this repository locally
-```sh
+```bash
 git clone --recurse-submodules https://github.com/Extended-Object-Detection-ROS/qt_gui_eod -b r1.0.0
 ```
-2. (Optional) Install igraph for complex object detection
-```sh
+2. (Optional) Install igraph for Complex Objects detection
+```bash
+mkdir tmp
+cd tmp
+curl -O https://igraph.org/nightly/get/c/igraph-0.7.1.tar.gz
+tar -xzf igraph-0.7.1.tar.gz
+rm igraph-0.7.1.tar.gz
+
+sudo mv igraph-0.7.1 /usr/local/src/
+cd /usr/local/src/igraph-0.7.1
+./configure
+make
+make check
+sudo make install
 ```
-3. Open CMakeLists.txt in qt-creator, build and run
+In CMakeLists.txt at 19 line change on:
+```
+set(igraph ON)
+```
+3. Open CMakeLists.txt in qt-creator, build and run program
 
