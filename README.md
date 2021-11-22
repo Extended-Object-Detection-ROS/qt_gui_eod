@@ -33,7 +33,7 @@ make
 make check
 sudo make install
 ```
-In CMakeLists.txt at 19 line change on:
+In `qt_gui_eod\CMakeLists.txt` at 19 line change on:
 ```cmake
 set(igraph ON)
 ```
