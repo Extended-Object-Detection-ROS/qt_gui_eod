@@ -3,8 +3,8 @@
 
 Allows:
  - See and save results of object detection on static images
- - Edit and save object bases
- - Choosing subset of objects for detection
+ - Edit and save object bases (XML-files with object descriptions)
+ - Choose subset of objects for detection
  
 ![empty gui](doc/eod_gui_empty.png)
 
