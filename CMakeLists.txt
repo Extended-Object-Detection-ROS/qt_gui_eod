@@ -66,6 +66,7 @@ set( eod_srcs
     lib/relations/ThreeDimRangeRelation.cpp
     lib/relations/SpaceRelations.cpp
     lib/relations/SizeRelations.cpp
+    lib/relations/SameExtractedInfoRelation.cpp
     )
 
 set(PROJECT_SOURCES
