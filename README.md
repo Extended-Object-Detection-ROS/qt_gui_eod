@@ -23,6 +23,10 @@ Allows:
 ```bash
 git clone --recurse-submodules https://github.com/Extended-Object-Detection-ROS/qt_gui_eod -b r1.0.0
 ```
+or master version 
+```bash
+git clone --recurse-submodules https://github.com/Extended-Object-Detection-ROS/qt_gui_eod
+```
 2. (Optional) Install igraph for Complex Objects detection
 ```bash
 mkdir tmp
